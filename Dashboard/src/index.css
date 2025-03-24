@@ -1,0 +1,272 @@
+.nav-link{
+  color: black;
+}
+.user{
+  font-weight: bolder;
+}
+.profit
+{
+  color: green !important;
+}
+.loss{
+  color: red !important;
+}
+.username h6 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: rgb(83, 83, 83);
+  margin-bottom: 20px;
+}
+.divider {
+  border: none;
+  background: #d1d1d1;
+  height: 1px;
+  margin: 20px 0;
+  margin-bottom: 5%;
+}
+.section {
+  padding-bottom: 2%;
+}
+.section span {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2%;
+}
+.section span p {
+  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+.section-icon {
+  transform: scale(0.8);
+  color: rgb(112, 112, 112);
+  padding: 0;
+  margin: 0;
+  margin-right: 10px;
+}
+.data {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.data .first h3 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: rgb(71, 71, 71);
+}
+
+.data .first p {
+  font-size: 0.8rem;
+  color: rgb(136, 136, 136);
+}
+.data .first small {
+  font-size: 0.8rem;
+  color: rgb(72, 194, 55);
+}
+
+.data .first .profit {
+  color: rgb(72, 194, 55);
+}
+
+.data hr {
+  border-left: 0.6px solid rgb(243, 242, 242);
+  height: 70px;
+}
+
+.data .second p {
+  font-size: 0.8rem;
+  color: rgb(136, 136, 136);
+  margin-bottom: 10px;
+  white-space: nowrap;
+}
+
+.data .second p span {
+  display: inline;
+  margin-left: 5%;
+  font-size: 0.9rem;
+  color: rgb(100, 100, 100);
+}
+
+.section hr {
+  margin-top: 6%;
+}
+
+.funds {
+  width: 100%;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.funds p {
+  font-size: 0.8rem;
+  color: rgb(179, 179, 179);
+  margin-right: 8px;
+}
+
+.btn {
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 2px;
+  color: #fff;
+  margin-right: 2px;
+  margin-left: 2px;
+}
+
+.btn-green {
+  background: #4caf50;
+}
+
+.btn-blue {
+  background: #4184f3;
+}
+
+.m--
+{
+  margin-left: -3.4rem;
+}
+
+
+
+
+.section-icon {
+  transform: scale(0.8);
+  color: rgb(66, 56, 56);
+  padding: 0;
+  margin: 0;
+  margin-right: 10px;
+}
+
+.col span p {
+  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: 300;
+}
+
+.table {
+  border: 1px solid #ddd;
+  padding: 5% 8%;
+}
+
+.table .data {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.table .data > * {
+  margin-bottom: 5%;
+}
+
+.table .data p:first-child {
+  font-size: 1rem;
+  color: rgb(151, 151, 151);
+}
+
+.imp {
+  font-size: 1.5rem;
+  color: #313131;
+}
+
+.colored {
+  color: #4184f3;
+}
+
+.table hr {
+  border: none;
+  background: #d1d1d1;
+  height: 0.5px;
+  margin-bottom: 5%;
+}
+
+.commodity {
+  padding: 2% 8%;
+  text-align: center;
+}
+
+.commodity p {
+  margin-bottom: 10%;
+  color: #c9c9c9;
+}
+
+/* sudo selectors */
+.btn-blue:hover {
+  background: #74a7fa;
+}
+
+.btn-green:hover {
+  background: #7bdd7f;
+}
+
+.title {
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: rgb(71, 71, 71);
+  margin-bottom: 2%;
+}
+
+.order-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.order-table tr {
+  border-top: 1px solid #f1f1f1;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.order-table th {
+  text-align: right;
+  padding: 15px 10px;
+  color: rgb(145, 145, 145);
+  font-weight: 300;
+  font-size: 0.8rem;
+}
+
+.order-table tr th:first-child,
+.order-table tr td:first-child {
+  text-align: left;
+}
+
+.order-table tr th:nth-child(1),
+.order-table tr th:nth-child(4) {
+  border-right: 1px solid #f1f1f1;
+}
+
+.order-table tr td:nth-child(1),
+.order-table tr td:nth-child(4) {
+  border-right: 1px solid #f1f1f1;
+}
+
+.order-table tr td:last-child {
+  font-size: 0.6rem;
+}
+
+.order-table td {
+  padding: 10px 10px;
+  text-align: right;
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: rgb(73, 73, 73);
+}
+.buy-sell{
+  border: none;
+  border-radius:4% ;
+  width: 3vw;
+}
+.share{
+  background-color: #18fbff;
+}
+.align-left {
+  text-align: left;
+}
+
+.order-table td.profit {
+  color: rgb(72, 194, 55);
+}
+
+.order-table td.loss {
+  color: rgb(250, 118, 78);
+}
