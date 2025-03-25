@@ -7,21 +7,26 @@ const SellOrderModal = ({ stock, watchlist, onClose }) => {
   const [holdings, setHoldings] = useState([]);
   const [quantity, setQuantity] = useState(0);
   const [price, setPrice] = useState(0);
-  const [error, setError] = useState(null); // Added for error handling
+  const [error, setError] = useState(null);
+  const [warning, setWarning] = useState(null);
 
-  // Fetch holdings from API
   useEffect(() => {
     const fetchHoldings = async () => {
       try {
         const res = await axios.get(url);
         setHoldings(res.data);
 
-        // Set initial values after fetching holdings
-        const matchingHolding = res.data.find(item => item.name === stock.name);
-        const matchingItem = watchlist.find(item => item.name === stock.name);
-        if (matchingHolding && matchingItem) {
-          setQuantity(matchingHolding.qty || 0);
-          setPrice((matchingItem.live || 0) * (matchingHolding.qty || 0));
+        const matchingHolding = res.data.find((item) => item.name === stock.name);
+        const matchingItem = watchlist.find((item) => item.name === stock.name);
+
+        const qty = matchingHolding?.qty || 0;
+        const livePrice = matchingItem?.live || 0;
+
+        setQuantity(qty);
+        setPrice(livePrice * qty);
+
+        if (qty === 0 || livePrice === 0) {
+          setWarning("You do not have any shares of this stock currently.");
         }
       } catch (err) {
         console.error("Data not found:", err.message);
@@ -29,55 +34,124 @@ const SellOrderModal = ({ stock, watchlist, onClose }) => {
       }
     };
 
-    fetchHoldings();
-  }, [stock, watchlist]); // Dependencies added
+    if (stock) fetchHoldings();
+  }, [stock, watchlist]);
 
-  if (!stock) return null; // Don't render if no stock is selected
+  if (!stock) return null;
+
+  const maxQuantity = holdings.find((item) => item.name === stock.name)?.qty || 0;
+  const livePrice = stock.live || 0;
+  const maxPrice = livePrice * maxQuantity;
 
   const onChangeQuantity = (e) => {
     const newQuantity = parseFloat(e.target.value) || 0;
-    setQuantity(newQuantity);
-    setPrice((stock.live || 0) * newQuantity); // Fallback to 0 if stock.live is undefined
+    const clampedQty = Math.min(newQuantity, maxQuantity);
+
+    if (maxQuantity === 0) {
+      setWarning("You do not have any shares of this stock currently.");
+      return;
+    }
+    if (newQuantity > maxQuantity) {
+      setWarning(`Quantity cannot exceed ${maxQuantity}`);
+    } else {
+      setWarning(null);
+    }
+
+    setQuantity(clampedQty);
+    setPrice(livePrice * clampedQty);
   };
 
   const onChangePrice = (e) => {
     const newPrice = parseFloat(e.target.value) || 0;
-    setPrice(newPrice);
-    setQuantity(stock.live ? newPrice / stock.live : 0); // Avoid division by zero
+    const clampedPrice = Math.min(newPrice, maxPrice);
+
+    if (maxPrice === 0) {
+      setWarning("You do not have any shares of this stock currently.");
+      return;
+    }
+    if (newPrice > maxPrice) {
+      setWarning(`Price cannot exceed ${maxPrice.toFixed(2)}`);
+    } else if (livePrice && newPrice / livePrice > maxQuantity) {
+      setWarning(`Price implies quantity exceeding ${maxQuantity}`);
+    } else {
+      setWarning(null);
+    }
+
+    setPrice(clampedPrice);
+    setQuantity(livePrice ? Math.min(clampedPrice / livePrice, maxQuantity) : 0);
   };
 
-  // Function to handle sell order submission
   const handleSell = async () => {
+    if (maxQuantity === 0 || maxPrice === 0) {
+      setWarning("You do not have any shares of this stock currently.");
+      return;
+    }
+    if (quantity <= 0) {
+      setError("Quantity must be greater than 0");
+      return;
+    }
+    if (quantity > maxQuantity) {
+      setWarning(`Quantity cannot exceed ${maxQuantity}`);
+      return;
+    }
+    if (price > maxPrice) {
+      setWarning(`Price cannot exceed ${maxPrice.toFixed(2)}`);
+      return;
+    }
+
     try {
-      await AddOrder({ name: stock.name, qty: quantity, mode: "Sell", price, ltp: stock.live });
-      onClose(); // Close the modal after successful sell
+      await AddOrder({
+        name: stock.name,
+        qty: quantity,
+        mode: "Sell",
+        price,
+        ltp: stock.live,
+      });
+      onClose();
     } catch (err) {
       setError("Failed to place sell order");
     }
   };
+
+  const isSellDisabled = maxQuantity === 0 || maxPrice === 0;
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
         <h3>{stock.name}</h3>
         <p>📈 NSE</p>
-        {error && <p style={{ color: "red" }}>{error}</p>} {/* Error display */}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {warning && <p style={{ color: "orange" }}>{warning}</p>}
 
         <label>Qty:</label>
         <input
-          type="text"
+          type="number"
           value={quantity}
           onChange={onChangeQuantity}
+          min="0"
+          max={maxQuantity}
+          step="1"
+          disabled={maxQuantity === 0}
         />
 
         <label>Price:</label>
         <input
-          type="text"
+          type="number"
           value={price}
           onChange={onChangePrice}
+          min="0"
+          max={maxPrice}
+          step="0.01"
+          disabled={maxPrice === 0}
         />
 
-        <button className="buy-button" onClick={handleSell}>
+        <button
+          className="buy-button"
+          onClick={handleSell}
+          disabled={isSellDisabled}
+          style={{ opacity: isSellDisabled ? 0.5 : 1 }} // Optional: Visual feedback
+          
+        >
           Sell
         </button>
         <button className="cancel-button" onClick={onClose}>
@@ -88,7 +162,6 @@ const SellOrderModal = ({ stock, watchlist, onClose }) => {
   );
 };
 
-// Async function to place order
 async function AddOrder({ name, qty, mode, price, ltp }) {
   try {
     const response = await axios.post("http://localhost:3000/newOrder", {
@@ -96,12 +169,12 @@ async function AddOrder({ name, qty, mode, price, ltp }) {
       qty,
       mode,
       price,
-      ltp
+      ltp,
     });
     console.log("Order placed successfully:", response.data);
   } catch (error) {
     console.error("Error placing order:", error.message);
-    throw error; // Re-throw to handle in handleSell
+    throw error;
   }
 }
 

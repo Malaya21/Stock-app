@@ -122,51 +122,79 @@ app.get('/', (req, res) => {
 
 app.post('/newOrder', async (req, res) => {
   const { name, qty, mode, price, ltp } = req.body;
+
   const order1 = new OrderModel({
-    name: name,
-    qty: qty,
-    mode: mode,
-    price: price,
-    ltp: ltp
-
+    name,
+    qty,
+    mode,
+    price,
+    ltp,
   });
-  const holding = await HoldingsModel.findOne({ name });
-
-
 
   try {
     await order1.save();
-    if (holding) {
-      const avrage = (holding.avg + price) / (1 + qty);
-      const Tprice = holding.Tprice + price;
-      const Quantity = holding.qty + qty;
-      await HoldingsModel.findOneAndUpdate(
-        { name: name },
-        {
-          $set: {
-            avg: avrage,
-            Tprice: Tprice,
-            ltp: ltp,
-            qty: Quantity
+    const holding = await HoldingsModel.findOne({ name });
+
+    if (mode === 'buy') { // Buy logic
+      if (holding) {
+        const avrage = (holding.avg * holding.qty + price) / (holding.qty + qty); // Weighted average
+        const Tprice = holding.Tprice + price;
+        const Quantity = holding.qty + qty;
+        await HoldingsModel.findOneAndUpdate(
+          { name },
+          {
+            $set: {
+              avg: avrage,
+              Tprice,
+              ltp,
+              qty: Quantity,
+            },
           }
-        }
-      );
+        );
+      } else {
+        const HoldingObj = new HoldingsModel({
+          name,
+          avg: price / qty, // Initial average price
+          Tprice: price,
+          ltp,
+          qty,
+        });
+        await HoldingObj.save();
+      }
+    } else { // Sell logic
+      if (!holding) {
+        return res.status(400).send('No holdings found to sell');
+      }
+      if (qty > holding.qty) {
+        return res.status(400).send('Cannot sell more than you own');
+      }
 
+      const Quantity = holding.qty - qty;
+      const Tprice = holding.Tprice - price;
 
-    } else {
-      const HoldingObj = await HoldingsModel({
-
-        name: name,
-        avg: ltp,
-        Tprice: price,
-        ltp: ltp,
-        qty: qty
-      })
-     await HoldingObj.save();
+      if (Quantity === 0) {
+        // Delete holding if all shares are sold
+        await HoldingsModel.findOneAndDelete({ name });
+      } else {
+        // Update holding with remaining shares
+        const avrage = Tprice / Quantity; // Safe: Quantity > 0
+        await HoldingsModel.findOneAndUpdate(
+          { name },
+          {
+            $set: {
+              avg: avrage,
+              Tprice,
+              ltp,
+              qty: Quantity,
+            },
+          }
+        );
+      }
     }
 
     res.status(201).send('Order placed successfully');
   } catch (error) {
+    console.error('Error placing order:', error);
     res.status(500).send('Failed to place order');
   }
 });
