@@ -20,7 +20,9 @@ function Holding({ watchlist }) {
   }, []);
 
   return (
-    <>
+    <div
+    className="box"
+    style={{ height: "80vh", overflowY: "auto", overflowX: "hidden" }}>
       <h3 className="text-muted">Holdings ({holdings.length})</h3>
       <table className="table">
         <thead>
@@ -66,7 +68,7 @@ function Holding({ watchlist }) {
           })}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
 

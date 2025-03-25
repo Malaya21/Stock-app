@@ -22,8 +22,34 @@ mongoose.connect(url)
 
 // Stock symbols for Indian market (NSE)
 const stockSymbols = [
-  'INFY.NS', 'ONGC.NS', 'TCS.NS', 'KPITTECH.NS', 'QUICKHEAL.NS',
-  'WIPRO.NS', 'M&M.NS', 'RELIANCE.NS'
+  'INFY.NS',        // Infosys Limited
+  'ONGC.NS',        // Oil and Natural Gas Corporation Limited
+  'TCS.NS',         // Tata Consultancy Services Limited
+  'KPITTECH.NS',    // KPIT Technologies Limited
+  'QUICKHEAL.NS',   // Quick Heal Technologies Limited
+  'WIPRO.NS',       // Wipro Limited
+  'M&M.NS',         // Mahindra & Mahindra Limited
+  'RELIANCE.NS',    // Reliance Industries Limited
+  'HDFCBANK.NS',    // HDFC Bank Limited
+  'ICICIBANK.NS',   // ICICI Bank Limited
+  'SBIN.NS',        // State Bank of India
+  'AXISBANK.NS',    // Axis Bank Limited
+  'TATASTEEL.NS',   // Tata Steel Limited
+  'HINDUNILVR.NS',  // Hindustan Unilever Limited
+  'ITC.NS',         // ITC Limited
+  'BHARTIARTL.NS',  // Bharti Airtel Limited
+  'ADANIENT.NS',    // Adani Enterprises Limited
+  'BAJFINANCE.NS',  // Bajaj Finance Limited
+  'LT.NS',          // Larsen & Toubro Limited
+  'SUNPHARMA.NS',   // Sun Pharmaceutical Industries Limited
+  'MARUTI.NS',      // Maruti Suzuki India Limited
+  
+  'ASIANPAINT.NS',  // Asian Paints Limited
+  'KOTAKBANK.NS',   // Kotak Mahindra Bank Limited
+  
+  'HCLTECH.NS',     // HCL Technologies Limited
+  'TATAMOTORS.NS',  // Tata Motors Limited
+  'ULTRACEMCO.NS'   // UltraTech Cement Limited
 ];
 
 // New endpoint to fetch stock data from Yahoo Finance
@@ -200,11 +226,11 @@ app.post('/newOrder', async (req, res) => {
 });
 
 app.get('/find/holdings', async (req, res) => {
-  const data = await HoldingsModel.find({});
+  const data = await HoldingsModel.find({}).sort({date:-1,time:-1});
   res.send(data);
 });
 app.get('/find/orders', async (req, res) => {
-  const data = await OrderModel.find({});
+  const data = await OrderModel.find({}).sort({date:-1,time:-1});
   res.send(data);
 });
 
@@ -217,3 +243,9 @@ app.get('/find/position', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`App is running on port ${PORT}`);
 });
+// app.get('/delete/orders',async (req,resp)=>{
+//   const data = await OrderModel.deleteMany({});
+//   console.log(data);
+  
+//    resp.send('sucessfully deleted');
+// })

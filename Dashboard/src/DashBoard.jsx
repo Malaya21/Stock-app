@@ -6,6 +6,7 @@ import Summary from "./Summary";
 import Watchlist from "./WatchList";
 import Orders from "./Order";
 import Funds from "./Funds";
+import StockDetail from "./StockDetail";
 import axios from "axios";
 const url = 'http://localhost:3000/stocks'
 
@@ -31,22 +32,13 @@ function DashBoard() {
            <Watchlist watchlist={watchlist}/>
         </div>
         <div className="col-8 my-5">
-          {/* <BrowserRouter>
-            <Routes>
-              
-              <Route path="/dashboard"></Route>
-              <Route path="/position"></Route>
-              
-              <Route path="/holding"></Route>
-            </Routes>
-          </BrowserRouter> */}
-         
           <Routes>
           <Route path="/" element={<Summary/>}></Route>
             <Route path='/holding' element={<Holding watchlist={watchlist}/>}></Route>
             <Route path='/position' element={<Positions/>}></Route>
             <Route path="/orders" element={<Orders/>}></Route>
            <Route path="/fund" element={<Funds/>}></Route>
+           <Route path="/stockdetail/:name" element={<StockDetail details={watchlist}/>}></Route>
           </Routes>
         
         </div>

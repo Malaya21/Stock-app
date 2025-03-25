@@ -18,11 +18,13 @@ const Orders = () => {
 
     fetchOrders(); // Call the async function
   }, []);
-  return (<>
+  return (<div
+    className="box"
+    style={{ height: "80vh", overflowY: "auto", overflowX: "hidden" }}>
     <h3 className="text-muted">Orders ({Order.length})</h3>
     {Order.length==0?<div className="container">
       <div className="text center">
-        <p>You haven't placed any orders today</p>
+        <p>You haven't placed any orders yet</p>
 
         <Link to={"/"} className="btn btn-primary">
           Get started
@@ -58,7 +60,7 @@ const Orders = () => {
       </tbody>
     </table>
 }
-  </>
+  </div>
   );
 };
 
