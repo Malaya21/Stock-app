@@ -1,14 +1,19 @@
-
 import { Tooltip } from "@mui/material";
-import { useState,useEffect } from "react";
-
+import { useState } from "react";
+import SellOrderModal from './SellOrderModal'; // Fixed typo: Moedl -> Modal, Model -> Modal
 import BuyOrderModal from "./BuyOrderModal";
 
-function Watchlist({watchlist}) {
+function Watchlist({ watchlist }) {
   const [hoverIndex, setHoverIndex] = useState(null);
-  const [selectedStock, setSelectedStock] = useState(null);
+  const [selectedStockBuy, setSelectedStockBuy] = useState(null);
+  const [selectedStockSell, setSelectedStockSell] = useState(null);
+
   const handleBuyClick = (stock) => {
-    setSelectedStock(stock); // Open the modal
+    setSelectedStockBuy(stock); // Open the Buy modal
+  };
+
+  const handleSellClick = (stock) => {
+    setSelectedStockSell(stock); // Open the Sell modal (fixed from selectedStockSell)
   };
 
   return (
@@ -18,11 +23,18 @@ function Watchlist({watchlist}) {
         style={{ marginLeft: "-4rem" }}
         className="d-flex justify-content-evenly mt-3"
       >
-        {/* Floating Order Modal */}
-        {selectedStock && (
-          <BuyOrderModal 
-            stock={selectedStock} 
-            onClose={() => setSelectedStock(null)} 
+        {/* Floating Modals */}
+        {selectedStockBuy && (
+          <BuyOrderModal
+            stock={selectedStockBuy}
+            onClose={() => setSelectedStockBuy(null)}
+          />
+        )}
+        {selectedStockSell && (
+          <SellOrderModal // Fixed typo: Moedl -> Modal
+            stock={selectedStockSell}
+            watchlist={watchlist}
+            onClose={() => setSelectedStockSell(null)}
           />
         )}
         <i className="fa-solid fa-magnifying-glass mt-3 mx-2"></i>
@@ -42,10 +54,10 @@ function Watchlist({watchlist}) {
         style={{ height: "70%", overflowY: "auto", overflowX: "hidden" }}
       >
         {watchlist.map((stock, index) => {
-          let isProfit = parseFloat(stock.day)<0 ? "text-danger" : "text-success";
+          let isProfit = parseFloat(stock.day) < 0 ? "text-danger" : "text-success";
 
           return (
-            <div key={index}> {/* Moved key here */}
+            <div key={index}>
               <div
                 className="row my-4 p-2 position-relative"
                 onMouseEnter={() => setHoverIndex(index)}
@@ -76,6 +88,7 @@ function Watchlist({watchlist}) {
                       </Tooltip>
                       <Tooltip title="Sell (S)" arrow>
                         <button
+                          onClick={() => handleSellClick(stock)}
                           className="buy-sell"
                           style={{ background: "orange", color: "white" }}
                         >
@@ -90,7 +103,7 @@ function Watchlist({watchlist}) {
                       <Tooltip title="More" arrow>
                         <button
                           className="buy-sell"
-                          onClick={() => console.log("Hello")} 
+                          onClick={() => console.log("More clicked")}
                         >
                           <i className="fa-solid fa-bars"></i>
                         </button>
@@ -102,7 +115,7 @@ function Watchlist({watchlist}) {
                 {/* Arrow Indicator */}
                 <div className="col-1">
                   <span className={isProfit}>
-                    {parseFloat(stock.day)<0 ? (
+                    {parseFloat(stock.day) < 0 ? (
                       <i className="fa-solid fa-arrow-down"></i>
                     ) : (
                       <i className="fa-solid fa-arrow-up"></i>
@@ -110,7 +123,7 @@ function Watchlist({watchlist}) {
                   </span>
                 </div>
 
-                {/* Price and Tooltip */}
+                {/* Price */}
                 <div
                   className="col-2 position-relative"
                   style={{ top: "-.5rem", left: ".2rem" }}
