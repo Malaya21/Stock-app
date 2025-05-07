@@ -15,7 +15,7 @@ const OrderShema = new Schema({
     time: {
         type: String,
         default: () => {
-            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            const options = { hour: '2-digit', minute: '2-digit', second: '2-digit'};
             return new Date().toLocaleTimeString('en-GB', options);
         }
     }

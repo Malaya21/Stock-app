@@ -8,6 +8,7 @@ function Watchlist({ watchlist }) {
   const [hoverIndex, setHoverIndex] = useState(null);
   const [selectedStockBuy, setSelectedStockBuy] = useState(null);
   const [selectedStockSell, setSelectedStockSell] = useState(null);
+  const [inputStock,setInputStock] = useState(null);
 
   const handleBuyClick = (stock) => {
     setSelectedStockBuy(stock);
